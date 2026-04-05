@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyenGame – Skin Trade</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700&display=swap');
+:root{
+  --bg:#0a0c10;--surface:#111318;--surface2:#181c24;--surface3:#1e2330;
+  --accent:#f5a623;--accent2:#e8543a;--blue:#4a9eff;--green:#3ddc84;
+  --red:#ff4757;--text:#e8eaf0;--text2:#8892a4;--border:rgba(255,255,255,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(74,158,255,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(245,166,35,.06) 0%,transparent 50%);pointer-events:none;z-index:0;}
+.screen{display:none;position:relative;z-index:1;}.screen.active{display:block;}
+#screen-menu{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.logo{font-family:'Rajdhani',sans-serif;font-size:clamp(2.5rem,8vw,5rem);font-weight:700;letter-spacing:.1em;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(245,166,35,.4));}
+.logo-sub{font-size:.95rem;color:var(--text2);letter-spacing:.3em;text-transform:uppercase;margin-bottom:2.5rem;}
+.menu-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:420px;display:flex;flex-direction:column;gap:.9rem;}
+.btn{font-family:'Exo 2',sans-serif;font-size:.95rem;font-weight:600;padding:.8rem 1.4rem;border-radius:10px;border:none;cursor:pointer;transition:all .2s;letter-spacing:.04em;text-transform:uppercase;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 0 24px rgba(245,166,35,.35);}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--surface3);border-color:var(--accent);}
+.btn-danger{background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3);}
+.btn-danger:hover{background:rgba(255,71,87,.25);}
+.btn-success{background:linear-gradient(135deg,#3ddc84,#1ab86a);color:#000;}
+.btn-success:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1);}
+.btn-blue{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.3);}
+.btn-blue:hover{background:rgba(74,158,255,.25);}
+.input{font-family:'Exo 2',sans-serif;font-size:.9rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;color:var(--text);width:100%;transition:border-color .2s;}
+.input:focus{outline:none;border-color:var(--accent);}
+.page-wrap{max-width:820px;margin:0 auto;padding:2rem;}
+.page-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.page-title{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--accent);}
+.badge{font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:6px;text-transform:uppercase;letter-spacing:.1em;}
+.badge-host{background:rgba(245,166,35,.2);color:var(--accent);border:1px solid rgba(245,166,35,.4);}
+.badge-player{background:rgba(74,158,255,.2);color:var(--blue);border:1px solid rgba(74,158,255,.4);}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;}
+.section-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;}
+.label{font-size:.78rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;}
+.info-text{font-size:.85rem;color:var(--text2);line-height:1.5;}
+.divider{height:1px;background:var(--border);margin:1rem 0;}
+.row{display:flex;gap:.75rem;align-items:center;}
+.flex1{flex:1;}.mb1{margin-bottom:.75rem;}.mb2{margin-bottom:1.5rem;}
+.hidden{display:none!important;}
+.item-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.75rem;padding:.75rem;background:var(--surface2);border-radius:10px;border:1px solid var(--border);}
+.item-preview{width:44px;height:44px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;overflow:hidden;position:relative;}
+.item-preview img{width:100%;height:100%;object-fit:cover;border-radius:6px;}
+.color-swatches{display:flex;gap:4px;flex-wrap:wrap;max-width:160px;}
+.color-swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;}
+.color-swatch.selected{border-color:#fff;transform:scale(1.25);}
+.question-block{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:.75rem;}
+.answers-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem;}
+.player-status{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--surface2);border-radius:10px;}
+.status-dot{width:10px;height:10px;border-radius:50%;background:var(--text2);}
+.status-dot.online{background:var(--green);box-shadow:0 0 8px var(--green);}
+.link-box{display:flex;gap:.75rem;align-items:center;}
+.link-text{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.55rem .9rem;font-size:.8rem;color:var(--blue);word-break:break-all;font-family:monospace;}
+#screen-game{min-height:100vh;padding:1.5rem;max-width:1000px;margin:0 auto;}
+.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.phase-indicator{display:flex;gap:.5rem;flex-wrap:wrap;}
+.phase-step{font-size:.72rem;padding:.28rem .75rem;border-radius:20px;border:1px solid var(--border);color:var(--text2);transition:all .3s;}
+.phase-step.active{background:rgba(245,166,35,.15);border-color:var(--accent);color:var(--accent);}
+.phase-step.done{background:rgba(61,220,132,.1);border-color:var(--green);color:var(--green);}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:.7rem;margin-bottom:1.5rem;}
+.item-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:.9rem .6rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;user-select:none;}
+.item-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.item-card.selected{border-color:var(--accent);background:rgba(245,166,35,.08);}
+.item-card.selected::after{content:'✓';position:absolute;top:5px;right:8px;color:var(--accent);font-weight:700;}
+.item-img{width:56px;height:56px;border-radius:8px;margin:0 auto .5rem;display:flex;align-items:center;justify-content:center;font-size:1.7rem;overflow:hidden;position:relative;}
+.item-img img{width:100%;height:100%;object-fit:cover;border-radius:8px;}
+.item-num{position:absolute;top:-6px;left:-6px;width:20px;height:20px;background:var(--surface3);border:1px solid var(--border);border-radius:50%;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:2;}
+.item-name{font-size:.75rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.item-color-bar{height:3px;border-radius:2px;width:100%;margin-top:.3rem;}
+.selected-count{font-family:'Rajdhani',sans-serif;font-size:1.1rem;color:var(--accent);font-weight:700;}
+.question-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem;}
+.question-text{font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:600;margin-bottom:1.5rem;line-height:1.4;}
+.answers-big{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+.answer-btn{background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;display:flex;gap:.7rem;align-items:center;}
+.answer-btn:hover:not(:disabled){border-color:var(--blue);background:rgba(74,158,255,.08);}
+.answer-btn.correct{border-color:var(--green);background:rgba(61,220,132,.1);color:var(--green);}
+.answer-btn.wrong{border-color:var(--red);background:rgba(255,71,87,.1);color:var(--red);}
+.answer-btn:disabled{cursor:default;}
+.answer-letter{width:26px;height:26px;border-radius:6px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;}
+.countdown{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--accent);text-align:center;margin-bottom:1rem;}
+.countdown.urgent{color:var(--red);animation:pulse .5s infinite alternate;}
+@keyframes pulse{from{opacity:1}to{opacity:.4}}
+.quiz-result-badge{text-align:center;padding:1rem;border-radius:12px;font-size:1.1rem;font-weight:700;margin-bottom:1rem;}
+.quiz-result-badge.win{background:rgba(61,220,132,.12);color:var(--green);border:1px solid rgba(61,220,132,.3);}
+.quiz-result-badge.lose{background:rgba(255,71,87,.12);color:var(--red);border:1px solid rgba(255,71,87,.3);}
+.trade-layout{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:start;}
+.trade-side{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;}
+.trade-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;}
+.trade-item{display:flex;align-items:center;gap:.6rem;padding:.45rem .6rem;border-radius:8px;background:var(--surface2);margin-bottom:.35rem;font-size:.82rem;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.trade-item:hover{border-color:var(--accent);}
+.trade-item.in-offer{border-color:var(--accent);background:rgba(245,166,35,.08);}
+.trade-item.mystery{color:var(--text2);cursor:default;}
+.trade-item.mystery:hover{border-color:transparent;}
+.trade-middle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;padding-top:2.5rem;}
+.offer-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.7rem;min-height:60px;font-size:.8rem;color:var(--text2);}
+.offer-item{display:flex;align-items:center;gap:.5rem;padding:.25rem 0;color:var(--text);font-size:.82rem;}
+.pts-input-row{display:flex;gap:.5rem;align-items:center;margin-top:.5rem;}
+.pts-input-row input{width:80px;background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:.3rem .5rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.82rem;text-align:center;}
+.pts-input-row input:focus{outline:none;border-color:var(--accent);}
+.inventory-badge{font-size:.68rem;padding:.15rem .5rem;border-radius:20px;background:rgba(61,220,132,.15);color:var(--green);border:1px solid rgba(61,220,132,.3);}
+.trade-status{text-align:center;padding:1rem;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:1.5rem;}
+#screen-results{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;}
+.result-title{font-family:'Rajdhani',sans-serif;font-size:2.5rem;font-weight:700;color:var(--accent);margin-bottom:1rem;}
+.inventory-final{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:1rem;margin:2rem 0;width:100%;max-width:700px;}
+.inv-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;}
+.big-img{width:72px;height:72px;border-radius:10px;margin:0 auto .7rem;display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;position:relative;}
+.big-img img{width:100%;height:100%;object-fit:cover;border-radius:8px;}
+.points-display{font-family:'Rajdhani',sans-serif;font-size:3rem;font-weight:700;color:var(--green);margin:1rem 0;}
+.waiting{text-align:center;padding:2rem;color:var(--text2);}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:1rem 1.5rem;max-width:300px;z-index:9999;animation:slideIn .3s ease;font-size:.9rem;}
+@keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.conn-bar{position:fixed;top:0;left:0;right:0;padding:.35rem;text-align:center;font-size:.72rem;font-weight:600;z-index:9998;}
+.conn-bar.ok{background:rgba(61,220,132,.15);color:var(--green);}
+.conn-bar.bad{background:rgba(255,71,87,.15);color:var(--red);}
+.conn-bar.wait{background:rgba(245,166,35,.15);color:var(--accent);}
+@media(max-width:600px){.trade-layout{grid-template-columns:1fr;}.trade-middle{flex-direction:row;padding-top:0;}.answers-big{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="conn-bar" class="conn-bar wait">⏳ Łączenie z serwerem...</div>
+
+<!-- MENU -->
+<div id="screen-menu" class="screen active">
+  <div class="logo">SKYEN GAME</div>
+  <p class="logo-sub">Skin Trade Experience</p>
+  <div class="menu-card">
+    <button class="btn btn-primary" onclick="createLobby()">🎮 Stwórz Lobby (Host)</button>
+    <div class="divider"></div>
+    <div class="label">Dołącz przez kod lobby</div>
+    <div class="row">
+      <input class="input flex1" id="join-code" placeholder="Wpisz kod (np. ABC123)" maxlength="8" style="text-transform:uppercase">
+      <button class="btn btn-blue" onclick="joinByCode()">Dołącz</button>
+    </div>
+    <p class="info-text" style="text-align:center;margin-top:.25rem;">Gra inspirowana serią "Gra o Skiny" Skyena</p>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="screen-lobby" class="screen">
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-title">LOBBY</div>
+      <span id="role-badge" class="badge"></span>
+      <div style="margin-left:auto;font-size:.9rem;">Kod: <strong id="lobby-code-disp" style="color:var(--accent);font-size:1.2rem;font-family:'Rajdhani',sans-serif;letter-spacing:.1em;"></strong></div>
+    </div>
+
+    <div id="host-panel">
+      <div class="section">
+        <div class="section-title">🔗 Wyślij ten link znajomemu</div>
+        <div class="link-box">
+          <div class="link-text" id="share-link-text"></div>
+          <button class="btn btn-blue" onclick="copyLink()">Kopiuj</button>
+        </div>
+        <p class="info-text" style="margin-top:.75rem;">Lub podaj mu kod: <strong id="code-big" style="color:var(--accent);font-family:'Rajdhani',sans-serif;font-size:1.2rem;"></strong></p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">👤 Status Gracza</div>
+        <div class="player-status">
+          <div class="status-dot" id="pdot"></div>
+          <span id="pstatus">Czekam na gracza...</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🎒 Przedmioty na planszy <span style="margin-left:auto;font-size:.75rem;color:var(--text2);">min. 5</span></div>
+        <div id="items-cfg"></div>
+        <button class="btn btn-secondary" onclick="addItem()" style="width:100%;margin-top:.5rem;">+ Dodaj Przedmiot</button>
+      </div>
+
+      <div class="section">
+        <div class="section-title">❓ Pytania Quizu (dokładnie 5)</div>
+        <div id="quiz-cfg"></div>
+      </div>
+
+      <div id="start-err" class="info-text mb1" style="color:var(--red);"></div>
+      <button class="btn btn-success" onclick="startGame()" style="width:100%;font-size:1.05rem;padding:1rem;">▶ STARTUJ GRĘ</button>
+    </div>
+
+    <div id="player-panel" class="hidden">
+      <div class="section">
+        <div class="waiting"><div class="spinner"></div>Host konfiguruje grę. Poczekaj na start...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="screen-game" class="screen">
+  <div class="game-header">
+    <div class="page-title">SKYEN GAME</div>
+    <div class="phase-indicator">
+      <div class="phase-step" id="ph-board">📋 Plansza</div>
+      <div class="phase-step" id="ph-quiz">❓ Quiz</div>
+      <div class="phase-step" id="ph-trade">🔄 Trade</div>
+    </div>
+    <span id="game-badge" class="badge"></span>
+  </div>
+
+  <!-- BOARD -->
+  <div id="ph-board-content">
+    <div id="host-board">
+      <div class="section mb2">
+        <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+          <span class="info-text">Kliknij przedmioty, wybierz <strong style="color:var(--accent)">5 sztuk</strong> dla gracza</span>
+          <span class="selected-count" id="sel-count">0 / 5</span>
+        </div>
+      </div>
+      <div class="items-grid" id="host-grid"></div>
+      <button class="btn btn-primary" id="to-quiz-btn" onclick="hostProceedToQuiz()" style="width:100%;" disabled>Przejdź do Quizu ➡</button>
+    </div>
+    <div id="player-board" class="hidden">
+      <div class="section mb2">
+        <div class="info-text">Host wybiera przedmioty dla ciebie. Dowiesz się co dostałeś po quizie!</div>
+      </div>
+      <div class="items-grid" id="player-grid"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="ph-quiz-content" class="hidden">
+    <div id="quiz-render"></div>
+    <div id="host-quiz-ctrl" class="section hidden">
+      <div id="host-q-info" class="info-text mb1"></div>
+      <div class="row" style="flex-wrap:wrap;gap:.75rem;">
+        <button class="btn btn-blue" onclick="toggleCountdown()" id="cd-btn">⏱ Włącz odliczanie 30s</button>
+        <button class="btn btn-primary" onclick="hostNextQ()" id="next-q-btn" disabled>Następne pytanie ➡</button>
+      </div>
+      <div id="host-cd-display"></div>
+    </div>
+    <div id="player-quiz-ctrl" class="hidden">
+      <div id="player-cd-display"></div>
+      <div id="player-q-result"></div>
+    </div>
+  </div>
+
+  <!-- TRADE -->
+  <div id="ph-trade-content" class="hidden">
+    <div class="trade-status"><span class="info-text">Faza negocjacji – klikaj itemy żeby dodać je do oferty</span></div>
+    <div class="trade-layout">
+      <div class="trade-side">
+        <div class="trade-title"><span>HOST</span><span class="inventory-badge" id="host-pts-badge">0 pkt</span></div>
+        <div id="host-inv"></div>
+        <div id="host-offer-area">
+          <div class="divider"></div>
+          <div class="label mb1">Twoja oferta:</div>
+          <div class="offer-box" id="host-offer-box"><span style="color:var(--text2);font-size:.78rem;">kliknij item powyżej</span></div>
+          <div class="pts-input-row" id="host-pts-row">
+            <span class="info-text">+ Punkty:</span>
+            <input type="number" id="host-offer-pts" value="0" min="0" placeholder="0">
+          </div>
+        </div>
+      </div>
+
+      <div class="trade-middle">
+        <div style="font-size:1.8rem;color:var(--text2);">⇄</div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+          <button class="btn btn-primary" onclick="proposeOffer()" id="propose-btn">Zaproponuj</button>
+          <button class="btn btn-success hidden" onclick="acceptOffer()" id="accept-btn">Akceptuj ✓</button>
+          <button class="btn btn-danger hidden" onclick="declineOffer()" id="decline-btn">Odrzuć ✗</button>
+        </div>
+        <div style="font-size:.72rem;color:var(--text2);text-align:center;" id="trade-ready-txt"></div>
+      </div>
+
+      <div class="trade-side">
+        <div class="trade-title"><span>GRACZ</span><span class="inventory-badge" id="player-pts-badge">0 pkt</span></div>
+        <div id="player-inv"></div>
+        <div>
+          <div class="divider"></div>
+          <div class="label mb1">Oferta gracza:</div>
+          <div class="offer-box" id="player-offer-box"><span style="color:var(--text2);font-size:.78rem;">brak</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      <button class="btn btn-danger flex1" onclick="voteEndNego()">🏁 Zakończ Negocjacje</button>
+    </div>
+    <div id="nego-status" class="info-text" style="margin-top:.5rem;text-align:center;"></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="screen-results" class="screen">
+  <div class="result-title">🏆 WYNIKI</div>
+  <p class="info-text" id="res-desc"></p>
+  <div class="inventory-final" id="res-inv"></div>
+  <div class="points-display" id="res-pts"></div>
+  <p class="info-text" id="res-host-info" style="margin-top:.5rem;"></p>
+  <button class="btn btn-primary" onclick="backToMenu()" style="margin-top:2rem;">🔄 Powrót do Menu</button>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const PIESOCKET_API_KEY = 'SqIgNokgP6I3jooj3q2CcFq7ZOAh7QLQbGEwCpeP';
+const PIESOCKET_CLUSTER = 'free.nyc1';
+
+let lobbyId = null, isHost = false, ws = null, wsReady = false;
+let pendingMsgs = [];
+let cdInterval = null;
+
+let G = {
+  phase:'lobby', items:[], quiz:[], playerJoined:false,
+  selectedByHost:[], inventory:{}, currentQuestion:0, quizResults:[],
+  countdownActive:false, countdownValue:30,
+  hostOffer:{items:[],points:0}, playerOffer:{items:[],points:0},
+  tradeProposed:false, tradeAccepted:false,
+  endNego:{host:false,player:false},
+  hostPoints:1000, playerPoints:0
+};
+
+// ---- WS ----
+function wsConnect(channel) {
+  const url = `wss://${PIESOCKET_CLUSTER}.piesocket.com/v3/${channel}?api_key=${PIESOCKET_API_KEY}&notify_self=1`;
+  ws = new WebSocket(url);
+  ws.onopen = () => {
+    wsReady = true; setBar('ok','🟢 Połączono');
+    pendingMsgs.forEach(m => ws.send(m)); pendingMsgs = [];
+  };
+  ws.onclose = () => { wsReady=false; setBar('bad','🔴 Rozłączono – ponawiam...'); setTimeout(()=>wsConnect(channel),3000); };
+  ws.onerror = () => setBar('bad','🔴 Błąd połączenia');
+  ws.onmessage = (e) => { try { const m=JSON.parse(e.data); if(m.event==='game') handleMsg(m); } catch(_){} };
+}
+
+function wsSend(type, data) {
+  const p = JSON.stringify({event:'game', type, data});
+  if (wsReady && ws.readyState===1) ws.send(p); else pendingMsgs.push(p);
+}
+
+function handleMsg(msg) {
+  const {type, data} = msg;
+  if (type==='player_joined' && isHost) {
+    G.playerJoined=true; renderPlayerStatus(); toast('✅ Gracz dołączył!');
+  } else if (type==='state_sync' && !isHost) {
+    G={...G,...data}; renderCurrentPhase();
+  } else if (type==='host_selected' && !isHost) {
+    G.selectedByHost=data.selected; renderBoardPhase();
+  } else if (type==='phase_change' && !isHost) {
+    G={...G,...data.state}; G.phase=data.phase; renderCurrentPhase();
+  } else if (type==='quiz_answered' && isHost) {
+    G.quizResults=data.results; G.inventory=data.inventory;
+    G.countdownActive=false; if(cdInterval){clearInterval(cdInterval);cdInterval=null;}
+    renderQuizPhase();
+  } else if (type==='countdown_toggle' && !isHost) {
+    G.countdownActive=data.active; G.countdownValue=data.value||30;
+    renderQuizPhase(); if(data.active) startCd();
+  } else if (type==='next_question') {
+    G.currentQuestion=data.idx; G.countdownActive=false;
+    if(cdInterval){clearInterval(cdInterval);cdInterval=null;}
+    renderQuizPhase();
+  } else if (type==='offer_update') {
+    if(data.side==='host') G.hostOffer=data.offer; else G.playerOffer=data.offer;
+    G.tradeProposed=data.proposed; G.tradeAccepted=false; renderTradePhase();
+  } else if (type==='trade_executed') {
+    G.inventory=data.inventory; G.hostPoints=data.hp; G.playerPoints=data.pp;
+    G.hostOffer={items:[],points:0}; G.playerOffer={items:[],points:0};
+    G.tradeProposed=false; G.tradeAccepted=true; renderTradePhase(); toast('✅ Trade wykonany!');
+  } else if (type==='offer_declined') {
+    G.tradeProposed=false; G.tradeAccepted=false; renderTradePhase(); toast('❌ Oferta odrzucona.');
+  } else if (type==='nego_vote') {
+    G.endNego=data.votes;
+    if(data.votes.host&&data.votes.player){G.phase='results';renderCurrentPhase();}
+    else renderNegoStatus();
+  }
+}
+
+function syncToPlayer() {
+  wsSend('state_sync',{phase:G.phase,items:G.items,quiz:G.quiz,selectedByHost:G.selectedByHost,inventory:G.inventory,currentQuestion:G.currentQuestion,quizResults:G.quizResults,countdownActive:G.countdownActive,countdownValue:G.countdownValue,hostOffer:G.hostOffer,playerOffer:G.playerOffer,tradeProposed:G.tradeProposed,tradeAccepted:G.tradeAccepted,endNego:G.endNego,hostPoints:G.hostPoints,playerPoints:G.playerPoints});
+}
+
+// ---- HELPERS ----
+function genId(n=6){return Math.random().toString(36).substr(2,n).toUpperCase();}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');}
+function toast(m,d=3000){const e=document.getElementById('toast');e.textContent=m;e.classList.remove('hidden');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.add('hidden'),d);}
+function setBar(cls,msg){const b=document.getElementById('conn-bar');b.className='conn-bar '+cls;b.textContent=msg;}
+
+// ---- MENU ----
+function createLobby(){lobbyId=genId(6);isHost=true;wsConnect(lobbyId);setupLobby();}
+function joinByCode(){const c=document.getElementById('join-code').value.trim().toUpperCase();if(c.length<4){toast('Wpisz kod lobby!');return;}lobbyId=c;isHost=false;wsConnect(lobbyId);setupLobby();}
+
+// ---- LOBBY ----
+const SKIN_COLORS=['#FF6B35','#F7C59F','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98FB98','#FFB6C1','#87CEEB','#FF4500','#32CD32','#1E90FF','#FF69B4','#DAA520','#9400D3','#00CED1','#FF8C00','#20B2AA','#DC143C'];
+
+function setupLobby(){
+  showScreen('lobby');
+  document.getElementById('lobby-code-disp').textContent=lobbyId;
+  document.getElementById('code-big').textContent=lobbyId;
+  const url=window.location.href.split('?')[0]+'?lobby='+lobbyId;
+  document.getElementById('share-link-text').textContent=url;
+  if(isHost){
+    document.getElementById('role-badge').textContent='HOST';document.getElementById('role-badge').className='badge badge-host';
+    document.getElementById('host-panel').classList.remove('hidden');document.getElementById('player-panel').classList.add('hidden');
+    G.items=defaultItems();G.quiz=defaultQuiz();renderItemsCfg();renderQuizCfg();
+  } else {
+    document.getElementById('role-badge').textContent='GRACZ';document.getElementById('role-badge').className='badge badge-player';
+    document.getElementById('host-panel').classList.add('hidden');document.getElementById('player-panel').classList.remove('hidden');
+    const tryJoin=()=>{if(wsReady)wsSend('player_joined',{});else setTimeout(tryJoin,500);};tryJoin();
+  }
+}
+
+function renderPlayerStatus(){
+  document.getElementById('pdot').classList.toggle('online',G.playerJoined);
+  document.getElementById('pstatus').textContent=G.playerJoined?'Gracz dołączył! ✓':'Czekam na gracza...';
+}
+function copyLink(){const url=window.location.href.split('?')[0]+'?lobby='+lobbyId;navigator.clipboard.writeText(url).then(()=>toast('✅ Link skopiowany!')).catch(()=>toast('Skopiuj ręcznie: '+url));}
+
+// ---- ITEMS CONFIG ----
+function defaultItems(){return[{id:'i1',name:'AK-47 Red Line',emoji:'🔫',color:'#FF4500',imgUrl:''},{id:'i2',name:'AWP Dragon Lore',emoji:'🐉',color:'#DAA520',imgUrl:''},{id:'i3',name:'Karambit Fade',emoji:'🗡️',color:'#9400D3',imgUrl:''},{id:'i4',name:'M4A4 Howl',emoji:'🐺',color:'#DC143C',imgUrl:''},{id:'i5',name:'Deagle Blaze',emoji:'🔥',color:'#FF6B35',imgUrl:''},{id:'i6',name:'USP Neo-Noir',emoji:'🖤',color:'#1E90FF',imgUrl:''},{id:'i7',name:'Butterfly Knife',emoji:'🦋',color:'#20B2AA',imgUrl:''},{id:'i8',name:'Glock Fade',emoji:'✨',color:'#FF69B4',imgUrl:''}];}
+
+function renderItemsCfg(){
+  const c=document.getElementById('items-cfg');c.innerHTML='';
+  G.items.forEach((item,idx)=>{
+    const d=document.createElement('div');d.className='item-row';
+    d.innerHTML=`
+      <div class="item-preview" style="background:${item.color}25;border-color:${item.color}80;">
+        ${item.imgUrl?`<img src="${item.imgUrl}" onerror="this.style.display='none'"><span style="position:absolute">${item.emoji||''}</span>`:(item.emoji||'❓')}
+      </div>
+      <input class="input" style="flex:2;min-width:90px;" value="${item.name}" placeholder="Nazwa" oninput="G.items[${idx}].name=this.value">
+      <input class="input" style="width:64px;" value="${item.emoji}" placeholder="Emoji" oninput="G.items[${idx}].emoji=this.value;renderItemsCfg()">
+      <div class="color-swatches">${SKIN_COLORS.map(c=>`<div class="color-swatch${item.color===c?' selected':''}" style="background:${c}" onclick="G.items[${idx}].color='${c}';renderItemsCfg()"></div>`).join('')}</div>
+      <input class="input" style="flex:2;min-width:90px;" value="${item.imgUrl||''}" placeholder="URL obrazka (opcja)" oninput="G.items[${idx}].imgUrl=this.value;renderItemsCfg()">
+      <button class="btn btn-danger" onclick="G.items.splice(${idx},1);renderItemsCfg()" style="padding:.4rem .7rem;flex-shrink:0;">✕</button>
+    `;c.appendChild(d);
+  });
+}
+function addItem(){G.items.push({id:'i'+genId(4),name:'Nowy Skin',emoji:'🎯',color:SKIN_COLORS[Math.floor(Math.random()*20)],imgUrl:''});renderItemsCfg();}
+
+// ---- QUIZ CONFIG ----
+function defaultQuiz(){return Array.from({length:5},(_,i)=>({id:'q'+(i+1),question:`Pytanie ${i+1} – wpisz treść tutaj`,answers:['Odpowiedź A','Odpowiedź B','Odpowiedź C','Odpowiedź D'],correct:0}));}
+function renderQuizCfg(){
+  const c=document.getElementById('quiz-cfg');c.innerHTML='';
+  G.quiz.forEach((q,qi)=>{
+    const d=document.createElement('div');d.className='question-block';
+    d.innerHTML=`
+      <div class="label mb1">Pytanie ${qi+1} <span style="font-size:.7rem;color:var(--text2);">(zaznacz kółko przy prawidłowej)</span></div>
+      <input class="input mb1" value="${q.question}" placeholder="Treść pytania" oninput="G.quiz[${qi}].question=this.value">
+      <div class="answers-grid">
+        ${q.answers.map((a,ai)=>`<div style="display:flex;gap:.4rem;align-items:center;"><input type="radio" name="cor-${qi}" ${q.correct===ai?'checked':''} onchange="G.quiz[${qi}].correct=${ai};renderQuizCfg()"><input class="input" style="flex:1;" value="${a}" placeholder="${String.fromCharCode(65+ai)}" oninput="G.quiz[${qi}].answers[${ai}]=this.value"></div>`).join('')}
+      </div>
+    `;c.appendChild(d);
+  });
+}
+
+// ---- START ----
+function startGame(){
+  const err=document.getElementById('start-err');
+  if(G.items.length<5){err.textContent='❌ Potrzebujesz minimum 5 przedmiotów!';return;}
+  if(G.quiz.length!==5){err.textContent='❌ Muszą być dokładnie 5 pytań!';return;}
+  err.textContent='';
+  G.inventory={};G.items.forEach(i=>{G.inventory[i.id]='board';});
+  G.phase='board';G.selectedByHost=[];G.quizResults=[];G.currentQuestion=0;
+  G.hostOffer={items:[],points:0};G.playerOffer={items:[],points:0};
+  G.tradeProposed=false;G.tradeAccepted=false;G.endNego={host:false,player:false};
+  G.hostPoints=1000;G.playerPoints=0;
+  wsSend('phase_change',{phase:'board',state:G});
+  enterGame();
+}
+
+function enterGame(){
+  showScreen('game');
+  document.getElementById('game-badge').textContent=isHost?'HOST':'GRACZ';
+  document.getElementById('game-badge').className='badge '+(isHost?'badge-host':'badge-player');
+  renderCurrentPhase();
+}
+
+function renderCurrentPhase(){
+  const order=['board','quiz','trade'];const cur=order.indexOf(G.phase);
+  order.forEach((p,i)=>{const e=document.getElementById('ph-'+p);e.className='phase-step'+(i===cur?' active':i<cur?' done':'');});
+  ['board','quiz','trade'].forEach(p=>{document.getElementById('ph-'+p+'-content').classList.toggle('hidden',G.phase!==p);});
+  if(G.phase==='board')renderBoardPhase();
+  else if(G.phase==='quiz')renderQuizPhase();
+  else if(G.phase==='trade')renderTradePhase();
+  else if(G.phase==='results')showResults();
+}
+
+// ---- BOARD ----
+function renderBoardPhase(){
+  const sel=G.selectedByHost||[];
+  if(isHost){
+    document.getElementById('host-board').classList.remove('hidden');
+    document.getElementById('player-board').classList.add('hidden');
+    const grid=document.getElementById('host-grid');grid.innerHTML='';
+    G.items.forEach((item,idx)=>{
+      const isSel=sel.includes(item.id);
+      const d=document.createElement('div');d.className='item-card'+(isSel?' selected':'');
+      d.innerHTML=`<div class="item-num">${idx+1}</div><div class="item-img" style="background:${item.color}25;border:2px solid ${item.color}60;">${item.imgUrl?`<img src="${item.imgUrl}" onerror="this.style.display='none'"><span style="position:absolute">${item.emoji||''}</span>`:(item.emoji||'🎮')}</div><div class="item-name">${item.name}</div><div class="item-color-bar" style="background:${item.color}"></div>`;
+      d.onclick=()=>hostToggleItem(item.id);grid.appendChild(d);
+    });
+    document.getElementById('sel-count').textContent=sel.length+' / 5';
+    document.getElementById('to-quiz-btn').disabled=sel.length!==5;
+  } else {
+    document.getElementById('host-board').classList.add('hidden');
+    document.getElementById('player-board').classList.remove('hidden');
+    const grid=document.getElementById('player-grid');grid.innerHTML='';
+    G.items.forEach((item,idx)=>{
+      const isSel=sel.includes(item.id);
+      const d=document.createElement('div');d.className='item-card'+(isSel?' selected':'');d.style.pointerEvents='none';
+      d.innerHTML=`<div class="item-num">${idx+1}</div><div class="item-img" style="background:var(--surface3);font-size:1.5rem;">${isSel?'✓':'❓'}</div><div class="item-name">${isSel?'Wybrano':'???'}</div>`;
+      grid.appendChild(d);
+    });
+  }
+}
+
+function hostToggleItem(id){
+  if(!isHost)return;
+  const sel=[...G.selectedByHost];const idx=sel.indexOf(id);
+  if(idx>=0)sel.splice(idx,1);else{if(sel.length>=5)return;sel.push(id);}
+  G.selectedByHost=sel;wsSend('host_selected',{selected:sel});renderBoardPhase();
+}
+
+function hostProceedToQuiz(){
+  if(G.selectedByHost.length!==5)return;
+  G.phase='quiz';G.currentQuestion=0;G.quizResults=[];G.countdownActive=false;
+  syncToPlayer();renderCurrentPhase();
+}
+
+// ---- QUIZ ----
+function renderQuizPhase(){
+  const qIdx=G.currentQuestion||0;
+  if(qIdx>=5){
+    document.getElementById('quiz-render').innerHTML=`<div class="section" style="text-align:center;"><div style="font-size:1.3rem;margin-bottom:1rem;">Quiz zakończony! 🎉</div>${isHost?'<button class="btn btn-success" onclick="hostStartTrade()" style="width:100%;font-size:1.05rem;padding:1rem;">Przejdź do Trade 🔄</button>':'<div class="waiting"><div class="spinner"></div>Czekaj na hosta...</div>'}</div>`;
+    document.getElementById('host-quiz-ctrl').classList.add('hidden');
+    document.getElementById('player-quiz-ctrl').classList.add('hidden');
+    return;
+  }
+  const q=G.quiz[qIdx];const answered=G.quizResults[qIdx];
+  document.getElementById('quiz-render').innerHTML=`
+    <div class="question-box">
+      <div class="info-text" style="margin-bottom:.5rem;">Pytanie <strong style="color:var(--accent)">${qIdx+1}</strong> / 5 &nbsp;·&nbsp; Przedmiot: <strong style="color:var(--accent)">#${qIdx+1}</strong> z wybranych</div>
+      <div class="question-text">${q.question}</div>
+      <div class="answers-big">
+        ${q.answers.map((a,ai)=>`<button class="answer-btn ${answered!==undefined?(ai===q.correct?'correct':(ai===answered?'wrong':'')):''}
+          " onclick="playerAnswer(${ai})" ${answered!==undefined||isHost?'disabled':''}>
+          <span class="answer-letter">${String.fromCharCode(65+ai)}</span>${a}</button>`).join('')}
+      </div>
+    </div>
+  `;
+  if(isHost){
+    document.getElementById('host-quiz-ctrl').classList.remove('hidden');
+    document.getElementById('player-quiz-ctrl').classList.add('hidden');
+    const nb=document.getElementById('next-q-btn');nb.disabled=answered===undefined;nb.textContent=qIdx<4?'Następne pytanie ➡':'Zakończ Quiz ✓';
+    const info=document.getElementById('host-q-info');
+    if(answered!==undefined){
+      const ok=answered===q.correct;const iName=G.items.find(i=>i.id===G.selectedByHost[qIdx])?.name||`Item ${qIdx+1}`;
+      info.innerHTML=ok?`✅ <strong style="color:var(--green)">POPRAWNIE</strong> – <em>${iName}</em> trafia do <strong style="color:var(--blue)">Gracza</strong>`:`❌ <strong style="color:var(--red)">BŁĘDNIE</strong> – <em>${iName}</em> trafia do <strong style="color:var(--accent)">Hosta</strong>`;
+    }else{info.textContent='Czekam na odpowiedź gracza...';}
+    if(G.countdownActive&&answered===undefined)document.getElementById('host-cd-display').innerHTML=`<div class="countdown${G.countdownValue<=10?' urgent':''}" style="margin-top:.75rem">${G.countdownValue}</div>`;
+    else document.getElementById('host-cd-display').innerHTML='';
+  } else {
+    document.getElementById('host-quiz-ctrl').classList.add('hidden');
+    document.getElementById('player-quiz-ctrl').classList.remove('hidden');
+    const resEl=document.getElementById('player-q-result');
+    if(answered!==undefined){const ok=answered===q.correct;resEl.innerHTML=`<div class="quiz-result-badge ${ok?'win':'lose'}">${ok?'✅ Poprawnie! Zdobyłeś ten item!':'❌ Błędnie! Ten item trafia do Hosta.'}</div>`;}
+    else resEl.innerHTML='';
+    const cdEl=document.getElementById('player-cd-display');
+    if(G.countdownActive&&answered===undefined){cdEl.innerHTML=`<div class="countdown${G.countdownValue<=10?' urgent':''}">${G.countdownValue}</div>`;if(!cdInterval)startCd();}
+    else cdEl.innerHTML='';
+  }
+}
+
+function playerAnswer(ai){
+  if(isHost)return;const qIdx=G.currentQuestion||0;if(G.quizResults[qIdx]!==undefined)return;
+  const res=[...G.quizResults];res[qIdx]=ai;
+  const inv={...G.inventory};const ok=ai===G.quiz[qIdx].correct;const itemId=G.selectedByHost[qIdx];
+  inv[itemId]=ok?'player':'host';G.quizResults=res;G.inventory=inv;
+  if(cdInterval){clearInterval(cdInterval);cdInterval=null;}G.countdownActive=false;
+  wsSend('quiz_answered',{results:res,inventory:inv});renderQuizPhase();
+}
+
+function hostNextQ(){
+  const next=(G.currentQuestion||0)+1;G.currentQuestion=next;G.countdownActive=false;
+  if(cdInterval){clearInterval(cdInterval);cdInterval=null;}
+  document.getElementById('cd-btn').textContent='⏱ Włącz odliczanie 30s';
+  wsSend('next_question',{idx:next});renderQuizPhase();
+}
+
+function toggleCountdown(){
+  const active=!G.countdownActive;G.countdownActive=active;G.countdownValue=30;
+  document.getElementById('cd-btn').textContent=active?'⏱ Wyłącz odliczanie':'⏱ Włącz odliczanie 30s';
+  wsSend('countdown_toggle',{active,value:30});
+  if(active)startCd();else{if(cdInterval){clearInterval(cdInterval);cdInterval=null;}document.getElementById('host-cd-display').innerHTML='';}
+}
+
+function startCd(){
+  if(cdInterval)return;
+  cdInterval=setInterval(()=>{
+    G.countdownValue--;
+    const el=isHost?document.getElementById('host-cd-display'):document.getElementById('player-cd-display');
+    if(el)el.innerHTML=`<div class="countdown${G.countdownValue<=10?' urgent':''}" ${isHost?'style="margin-top:.75rem"':''}>${G.countdownValue}</div>`;
+    if(G.countdownValue<=0){clearInterval(cdInterval);cdInterval=null;if(!isHost)playerAnswer(-1);}
+  },1000);
+}
+
+// ---- TRADE ----
+function hostStartTrade(){
+  G.phase='trade';G.hostOffer={items:[],points:0};G.playerOffer={items:[],points:0};
+  G.tradeProposed=false;G.endNego={host:false,player:false};
+  syncToPlayer();renderCurrentPhase();
+}
+
+function renderTradePhase(){
+  const iMap={};G.items.forEach(i=>{iMap[i.id]=i;});
+  const hItems=Object.entries(G.inventory).filter(([,v])=>v==='host').map(([k])=>iMap[k]).filter(Boolean);
+  const pItems=Object.entries(G.inventory).filter(([,v])=>v==='player').map(([k])=>iMap[k]).filter(Boolean);
+
+  const hInv=document.getElementById('host-inv');hInv.innerHTML='';
+  hItems.forEach(item=>{
+    const inOffer=(G.hostOffer?.items||[]).includes(item.id);
+    const d=document.createElement('div');d.className='trade-item'+(inOffer?' in-offer':'');
+    d.innerHTML=`<div style="width:26px;height:26px;border-radius:6px;background:${item.color}30;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;">${item.emoji||'🎮'}</div><span>${item.name}</span>`;
+    if(isHost)d.onclick=()=>hostToggleOffer(item.id);hInv.appendChild(d);
+  });
+  if(!hItems.length)hInv.innerHTML='<div class="info-text">Brak przedmiotów</div>';
+
+  const pInv=document.getElementById('player-inv');pInv.innerHTML='';
+  pItems.forEach(item=>{
+    const inOffer=(G.playerOffer?.items||[]).includes(item.id);
+    const d=document.createElement('div');
+    if(!isHost){d.className='trade-item'+(inOffer?' in-offer':'');d.innerHTML=`<div style="width:26px;height:26px;border-radius:6px;background:${item.color}30;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;">${item.emoji||'🎮'}</div><span>${item.name}</span>`;d.onclick=()=>playerToggleOffer(item.id);}
+    else{d.className='trade-item mystery';d.innerHTML=`<div style="width:26px;height:26px;border-radius:6px;background:var(--surface3);display:flex;align-items:center;justify-content:center;">❓</div><span>Ukryty item gracza</span>`;}
+    pInv.appendChild(d);
+  });
+  if(!pItems.length)pInv.innerHTML='<div class="info-text">Brak przedmiotów</div>';
+
+  document.getElementById('host-pts-badge').textContent=(G.hostPoints||0)+' pkt';
+  document.getElementById('player-pts-badge').textContent=(G.playerPoints||0)+' pkt';
+  renderOfferBoxes(iMap);
+
+  const hasPending=G.tradeProposed&&!G.tradeAccepted;
+  if(isHost){
+    document.getElementById('propose-btn').classList.remove('hidden');
+    document.getElementById('accept-btn').classList.add('hidden');
+    document.getElementById('decline-btn').classList.add('hidden');
+  } else {
+    document.getElementById('propose-btn').classList.toggle('hidden',hasPending);
+    document.getElementById('accept-btn').classList.toggle('hidden',!hasPending);
+    document.getElementById('decline-btn').classList.toggle('hidden',!hasPending);
+  }
+  renderNegoStatus();
+}
+
+function renderOfferBoxes(iMap){
+  const ho=G.hostOffer||{items:[],points:0};const po=G.playerOffer||{items:[],points:0};
+  const hBox=document.getElementById('host-offer-box');
+  if(ho.items.length||ho.points){let h='';ho.items.forEach(id=>{const it=iMap[id];if(it)h+=`<div class="offer-item"><span>${it.emoji}</span><span>${it.name}</span></div>`;});if(ho.points>0)h+=`<div class="offer-item"><span>💰</span><span>${ho.points} punktów</span></div>`;hBox.innerHTML=h;}
+  else hBox.innerHTML='<span style="color:var(--text2);font-size:.78rem;">kliknij item powyżej</span>';
+  const pBox=document.getElementById('player-offer-box');
+  if(!G.tradeProposed){pBox.innerHTML='<span style="color:var(--text2);font-size:.78rem;">brak</span>';return;}
+  if(isHost){pBox.innerHTML=`<div class="offer-item"><span>❓</span><span>${po.items.length} ukryte itemy + ${po.points||0} pkt</span></div>`;}
+  else{let h='';po.items.forEach(id=>{const it=iMap[id];if(it)h+=`<div class="offer-item"><span>${it.emoji}</span><span>${it.name}</span></div>`;});if(po.points>0)h+=`<div class="offer-item"><span>💰</span><span>${po.points} punktów</span></div>`;pBox.innerHTML=h||'<span style="color:var(--text2);font-size:.78rem;">brak</span>';}
+}
+
+function renderNegoStatus(){
+  const v=G.endNego||{};let t='';
+  if(v.host&&!v.player)t='Host chce zakończyć...';
+  else if(!v.host&&v.player)t='Gracz chce zakończyć...';
+  else if(v.host&&v.player)t='✅ Obydwoje zgadzają się!';
+  document.getElementById('nego-status').textContent=t;
+}
+
+function hostToggleOffer(id){if(!isHost)return;const items=[...(G.hostOffer?.items||[])];const i=items.indexOf(id);if(i>=0)items.splice(i,1);else items.push(id);G.hostOffer={...G.hostOffer,items};renderTradePhase();}
+function playerToggleOffer(id){if(isHost)return;const items=[...(G.playerOffer?.items||[])];const i=items.indexOf(id);if(i>=0)items.splice(i,1);else items.push(id);G.playerOffer={...G.playerOffer,items};renderTradePhase();}
+
+function proposeOffer(){
+  if(isHost){const pts=parseInt(document.getElementById('host-offer-pts').value)||0;G.hostOffer={...G.hostOffer,points:pts};G.tradeProposed=true;wsSend('offer_update',{side:'host',offer:G.hostOffer,proposed:true});toast('📤 Oferta wysłana!');}
+  else{G.tradeProposed=true;wsSend('offer_update',{side:'player',offer:G.playerOffer,proposed:true});toast('📤 Oferta wysłana!');}
+  renderTradePhase();
+}
+
+function acceptOffer(){
+  const inv={...G.inventory};const ho=G.hostOffer||{items:[],points:0};const po=G.playerOffer||{items:[],points:0};
+  ho.items.forEach(id=>{if(inv[id]==='host')inv[id]='player';});
+  po.items.forEach(id=>{if(inv[id]==='player')inv[id]='host';});
+  const hp=Math.max(0,(G.hostPoints||0)-(ho.points||0)+(po.points||0));
+  const pp=Math.max(0,(G.playerPoints||0)-(po.points||0)+(ho.points||0));
+  wsSend('trade_executed',{inventory:inv,hp,pp});
+  G.inventory=inv;G.hostPoints=hp;G.playerPoints=pp;
+  G.hostOffer={items:[],points:0};G.playerOffer={items:[],points:0};
+  G.tradeProposed=false;G.tradeAccepted=true;renderTradePhase();toast('✅ Trade wykonany!');
+}
+
+function declineOffer(){G.tradeProposed=false;G.tradeAccepted=false;wsSend('offer_declined',{});renderTradePhase();toast('❌ Oferta odrzucona.');}
+
+function voteEndNego(){
+  const key=isHost?'host':'player';G.endNego={...(G.endNego||{}),[key]:true};
+  wsSend('nego_vote',{votes:G.endNego});
+  if(G.endNego.host&&G.endNego.player){G.phase='results';renderCurrentPhase();}
+  else{renderNegoStatus();toast('Czekam na drugiego gracza...');}
+}
+
+// ---- RESULTS ----
+function showResults(){
+  showScreen('results');
+  const iMap={};G.items.forEach(i=>{iMap[i.id]=i;});
+  const pItems=Object.entries(G.inventory).filter(([,v])=>v==='player').map(([k])=>iMap[k]).filter(Boolean);
+  const hItems=Object.entries(G.inventory).filter(([,v])=>v==='host').map(([k])=>iMap[k]).filter(Boolean);
+  document.getElementById('res-desc').textContent='Gra zakończona! Oto ekwipunek gracza:';
+  document.getElementById('res-pts').textContent=(G.playerPoints||0)+' punktów';
+  document.getElementById('res-host-info').textContent=`Host kończy z ${hItems.length} przedmiotami i ${G.hostPoints||0} pkt`;
+  const grid=document.getElementById('res-inv');grid.innerHTML='';
+  if(!pItems.length){grid.innerHTML='<div class="inv-card"><div style="color:var(--text2);">Brak przedmiotów</div></div>';return;}
+  pItems.forEach(item=>{const d=document.createElement('div');d.className='inv-card';d.innerHTML=`<div class="big-img" style="background:${item.color}25;border:2px solid ${item.color}60;">${item.imgUrl?`<img src="${item.imgUrl}" onerror="this.style.display='none'"><span style="position:absolute">${item.emoji||''}</span>`:(item.emoji||'🎮')}</div><div style="font-weight:600;font-size:.9rem;">${item.name}</div>`;grid.appendChild(d);});
+}
+
+function backToMenu(){if(ws){ws.close();ws=null;}lobbyId=null;isHost=false;wsReady=false;pendingMsgs=[];G={phase:'lobby',items:[],quiz:[],playerJoined:false,selectedByHost:[],inventory:{},currentQuestion:0,quizResults:[],countdownActive:false,countdownValue:30,hostOffer:{items:[],points:0},playerOffer:{items:[],points:0},tradeProposed:false,tradeAccepted:false,endNego:{host:false,player:false},hostPoints:1000,playerPoints:0};showScreen('menu');}
+
+// auto-fill code from URL
+const urlLobby=new URLSearchParams(window.location.search).get('lobby');
+if(urlLobby)document.getElementById('join-code').value=urlLobby;
+</script>
+</body>
+</html>
